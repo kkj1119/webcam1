@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카메라 웹 앱</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #camera-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #camera-preview {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+        }
+
+        #start-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        #capture-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        #captured-image {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="camera-container">
+        <video id="camera-preview" autoplay></video>
+        <button id="start-button">촬영 시작</button>
+        <button id="capture-button" disabled>사진 촬영</button>
+        <img id="captured-image" src="" alt="Captured Image">
+        <a href="album.html">앨범 보기</a>
+    </div>
+
+    <script>
+        document.getElementById('start-button').addEventListener('click', function () {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    var videoElement = document.getElementById('camera-preview');
+                    videoElement.srcObject = stream;
+                    document.getElementById('capture-button').disabled = false;
+                })
+                .catch(function (error) {
+                    console.error('웹캠 액세스 에러:', error);
+                });
+        });
+
+        document.getElementById('capture-button').addEventListener('click', function () {
+            var videoElement = document.getElementById('camera-preview');
+            var canvas = document.createElement('canvas');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            var context = canvas.getContext('2d');
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            var capturedImage = canvas.toDataURL('image/png');
+
+            var capturedImageElement = document.getElementById('captured-image');
+            capturedImageElement.src = capturedImage;
+
+            // 로컬 스토리지에 촬영한 사진을 저장
+            var storedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+            storedImages.push(capturedImage);
+            localStorage.setItem('capturedImages', JSON.stringify(storedImages));
+        });
+    </script>
+</body>
+</html>

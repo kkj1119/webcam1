@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사진 앨범</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #album-container {
+            text-align: center;
+        }
+
+        .album-image {
+            max-width: 100%;
+            height: auto;
+            margin: 10px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="album-container">
+        <!-- 여기에 앨범에서 표시할 사진들을 동적으로 추가합니다. -->
+    </div>
+    <a href="test2.html">메인 페이지로 돌아가기</a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var albumContainer = document.getElementById('album-container');
+            var storedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+
+            // 저장된 사진들을 앨범에서 표시
+            storedImages.forEach(function (imageData) {
+                var imgElement = document.createElement('img');
+                imgElement.src = imageData;
+                imgElement.classList.add('album-image');
+                albumContainer.appendChild(imgElement);
+            });
+        });
+    </script>
+</body>
+</html>
